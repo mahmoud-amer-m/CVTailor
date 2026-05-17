@@ -11,7 +11,7 @@ struct APIKeySection: View {
         } header: {
             Label("Anthropic API Key", systemImage: "key.fill")
         } footer: {
-            Text("Stored in UserDefaults on this device only.")
+            Text("Stored securely in the iOS Keychain on this device only.")
         }
     }
 }

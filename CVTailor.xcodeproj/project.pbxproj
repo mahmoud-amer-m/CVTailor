@@ -6,11 +6,27 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		AA11AA062FBA373A00BB5443 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D6DEAB672FBA373A00BB5443 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D6DEAB6E2FBA373A00BB5443;
+			remoteInfo = CVTailor;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		AA11AA002FBA373A00BB5443 /* CVTailorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CVTailorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D6DEAB6F2FBA373A00BB5443 /* CVTailor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CVTailor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		AA11AA012FBA373A00BB5443 /* CVTailorTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = CVTailorTests;
+			sourceTree = "<group>";
+		};
 		D6DEAB712FBA373A00BB5443 /* CVTailor */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = CVTailor;
@@ -19,6 +35,13 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		AA11AA022FBA373A00BB5443 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D6DEAB6C2FBA373A00BB5443 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -33,6 +56,7 @@
 			isa = PBXGroup;
 			children = (
 				D6DEAB712FBA373A00BB5443 /* CVTailor */,
+				AA11AA012FBA373A00BB5443 /* CVTailorTests */,
 				D6DEAB702FBA373A00BB5443 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,6 +65,7 @@
 			isa = PBXGroup;
 			children = (
 				D6DEAB6F2FBA373A00BB5443 /* CVTailor.app */,
+				AA11AA002FBA373A00BB5443 /* CVTailorTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,6 +73,29 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		AA11AA052FBA373A00BB5443 /* CVTailorTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AA11AA0A2FBA373B00BB5443 /* Build configuration list for PBXNativeTarget "CVTailorTests" */;
+			buildPhases = (
+				AA11AA032FBA373A00BB5443 /* Sources */,
+				AA11AA022FBA373A00BB5443 /* Frameworks */,
+				AA11AA042FBA373A00BB5443 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AA11AA072FBA373A00BB5443 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				AA11AA012FBA373A00BB5443 /* CVTailorTests */,
+			);
+			name = CVTailorTests;
+			packageProductDependencies = (
+			);
+			productName = CVTailorTests;
+			productReference = AA11AA002FBA373A00BB5443 /* CVTailorTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		D6DEAB6E2FBA373A00BB5443 /* CVTailor */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = D6DEAB7A2FBA373B00BB5443 /* Build configuration list for PBXNativeTarget "CVTailor" */;
@@ -80,6 +128,10 @@
 				LastSwiftUpdateCheck = 2650;
 				LastUpgradeCheck = 2650;
 				TargetAttributes = {
+					AA11AA052FBA373A00BB5443 = {
+						CreatedOnToolsVersion = 26.5;
+						TestTargetID = D6DEAB6E2FBA373A00BB5443;
+					};
 					D6DEAB6E2FBA373A00BB5443 = {
 						CreatedOnToolsVersion = 26.5;
 					};
@@ -100,11 +152,19 @@
 			projectRoot = "";
 			targets = (
 				D6DEAB6E2FBA373A00BB5443 /* CVTailor */,
+				AA11AA052FBA373A00BB5443 /* CVTailorTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		AA11AA042FBA373A00BB5443 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D6DEAB6D2FBA373A00BB5443 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -115,6 +175,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		AA11AA032FBA373A00BB5443 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D6DEAB6B2FBA373A00BB5443 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -124,7 +191,63 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		AA11AA072FBA373A00BB5443 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D6DEAB6E2FBA373A00BB5443 /* CVTailor */;
+			targetProxy = AA11AA062FBA373A00BB5443 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		AA11AA082FBA373B00BB5443 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Y26C7GHNEV;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
+				MACOSX_DEPLOYMENT_TARGET = 26.3;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.taskmanager.amer.CVTailorTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CVTailor.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CVTailor";
+			};
+			name = Debug;
+		};
+		AA11AA092FBA373B00BB5443 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Y26C7GHNEV;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
+				MACOSX_DEPLOYMENT_TARGET = 26.3;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.taskmanager.amer.CVTailorTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CVTailor.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CVTailor";
+			};
+			name = Release;
+		};
 		D6DEAB782FBA373B00BB5443 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -332,6 +455,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		AA11AA0A2FBA373B00BB5443 /* Build configuration list for PBXNativeTarget "CVTailorTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA11AA082FBA373B00BB5443 /* Debug */,
+				AA11AA092FBA373B00BB5443 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		D6DEAB6A2FBA373A00BB5443 /* Build configuration list for PBXProject "CVTailor" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
