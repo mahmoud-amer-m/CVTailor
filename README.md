@@ -8,8 +8,11 @@ A native iOS app built to demonstrate AI-driven mobile development — part of a
 - **Job description input** — paste any job posting
 - **AI tailoring** — sends both to Claude via the Anthropic API and returns a rewritten CV that highlights relevant skills and incorporates keywords naturally
 - **Loading overlay** — full-screen progress indicator while the API call is in progress
-- **Error handling** — typed errors per status code (invalid key, rate limit, network failure, etc.) with a retry action
-- **Export** — share the result as a multi-page PDF (generated with PDFKit + CoreText) or a `.txt` file via the system share sheet
+- **Error handling** — typed errors per HTTP status code (invalid key, rate limit, server overload, network failure, etc.) with a named alert title and a one-tap retry action
+- **Format-matched PDF export** — when the input is a PDF, the exported PDF matches the original's page size, font family, font sizes, and text colors; section headers and the name line are styled independently from body text
+- **Hyperlink preservation** — URLs detected in the tailored text are rendered underlined and embedded as clickable PDF link annotations using `CGContext.setURL(_:for:)`
+- **Clear button** — trash icon in the navigation bar clears all input fields with a confirmation prompt
+- **Export** — share the result as a multi-page PDF or a `.txt` file via the system share sheet
 
 ## Requirements
 
@@ -45,9 +48,11 @@ CVTailor/
 3. Enter your **CV** by typing/pasting in the text editor, or tap **Import PDF** to pick a PDF file.
 4. Tap **Tailor My CV** — a loading overlay appears while the model processes the request.
 5. The tailored CV appears on the next screen. Use the toolbar buttons to **export as PDF** or **export as TXT**.
+6. To start over, tap the **trash icon** in the top-right corner and confirm the prompt.
 
 ## Notes
 
 - The API key is stored in `UserDefaults`. For a production release, move it to the Keychain.
 - Image-based or scanned PDFs cannot have text extracted and will show an error.
 - The model used is `claude-opus-4-7`. Swap to a smaller model in `AnthropicService.swift` to reduce cost.
+- PDF format matching works on text-based PDFs. The style guide is sampled from the first page: most-frequent font size = body, largest = name, the size in between = section headers.
