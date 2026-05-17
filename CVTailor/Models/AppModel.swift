@@ -3,8 +3,8 @@ import Observation
 
 @Observable
 class AppModel {
-    var apiKey: String = UserDefaults.standard.string(forKey: "anthropicAPIKey") ?? "" {
-        didSet { UserDefaults.standard.set(apiKey, forKey: "anthropicAPIKey") }
+    var apiKey: String = KeychainService.load(forKey: "anthropicAPIKey") ?? "" {
+        didSet { KeychainService.save(apiKey, forKey: "anthropicAPIKey") }
     }
     var jobDescription: String = ""
     var cvText: String = ""

@@ -25,16 +25,17 @@ A native iOS app built to demonstrate AI-driven mobile development — part of a
 1. Clone the repo and open `CVTailor.xcodeproj` in Xcode.
 2. Set your development team under **Signing & Capabilities**.
 3. Build and run on a simulator or device.
-4. Enter your Anthropic API key in the **API Key** field — it is stored in `UserDefaults` on the device only.
+4. Enter your Anthropic API key in the **API Key** field — it is stored in the iOS Keychain on the device only.
 
 ## Project Structure
 
 ```
 CVTailor/
 ├── Models/
-│   └── AppModel.swift              # @Observable state; API key persisted via UserDefaults didSet
+│   └── AppModel.swift              # @Observable state; API key persisted via Keychain didSet
 ├── Services/
 │   ├── AnthropicService.swift      # URLSession call to POST /v1/messages; typed error cases
+│   ├── KeychainService.swift       # Keychain read/write/delete via kSecClassGenericPassword
 │   ├── PDFService.swift            # PDFKit text extraction, CVStyleGuide sampling, CoreText PDF generation
 │   └── ExportTypes.swift           # ExportablePDF and ExportableTXT Transferable types
 └── Views/
@@ -57,7 +58,7 @@ CVTailor/
 
 ## Notes
 
-- The API key lives on `AppModel` and is persisted to `UserDefaults` via a `didSet` observer. For a production release, move it to the Keychain.
+- The API key is stored in the iOS Keychain via `KeychainService` (`kSecClassGenericPassword`), written on every `didSet` of `AppModel.apiKey`.
 - Image-based or scanned PDFs cannot have text extracted and will show an error.
 - The model used is `claude-opus-4-7`. Swap to a smaller model in `AnthropicService.swift` to reduce cost.
 - PDF format matching works on text-based PDFs. The style guide is sampled from the first page: most-frequent font size = body, largest = name, the size in between = section headers.
