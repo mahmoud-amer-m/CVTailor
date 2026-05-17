@@ -44,6 +44,7 @@ struct InputView: View {
                 Button("Clear", role: .destructive) {
                     model.jobDescription = ""
                     model.cvText = ""
+                    model.originalPDFData = nil
                     cvMode = .text
                 }
                 Button("Cancel", role: .cancel) { }
@@ -51,7 +52,7 @@ struct InputView: View {
                 Text("This will remove the job description and CV. Your API key will not be affected.")
             }
             .navigationDestination(isPresented: $navigateToResult) {
-                ResultView(tailoredCV: model.tailoredCV)
+                ResultView(tailoredCV: model.tailoredCV, originalPDFData: model.originalPDFData)
             }
             .overlay {
                 if model.isLoading {
@@ -197,6 +198,7 @@ struct InputView: View {
             }
 
             model.cvText = text
+            model.originalPDFData = data
 
         case .failure(let error):
             model.errorMessage = error.localizedDescription

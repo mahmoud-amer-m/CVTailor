@@ -2,9 +2,10 @@ import SwiftUI
 
 struct ResultView: View {
     let tailoredCV: String
+    let originalPDFData: Data?
 
     private var exportPDF: ExportablePDF {
-        ExportablePDF(data: PDFService.generatePDF(from: tailoredCV))
+        ExportablePDF(data: PDFService.generatePDF(from: tailoredCV, matchingPDF: originalPDFData))
     }
 
     private var exportTXT: ExportableTXT {
@@ -49,6 +50,6 @@ struct ResultView: View {
 
 #Preview {
     NavigationStack {
-        ResultView(tailoredCV: "John Doe\nSoftware Engineer\n\nExperience:\n• Built scalable iOS apps\n• Led cross-functional teams")
+        ResultView(tailoredCV: "John Doe\nSoftware Engineer\n\nExperience:\n• Built scalable iOS apps\n• Led cross-functional teams", originalPDFData: nil)
     }
 }

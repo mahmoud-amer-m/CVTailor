@@ -5,6 +5,7 @@ import Observation
 class AppModel {
     var jobDescription: String = ""
     var cvText: String = ""
+    var originalPDFData: Data? = nil
     var tailoredCV: String = ""
     var isLoading: Bool = false
     var errorTitle: String? = nil
