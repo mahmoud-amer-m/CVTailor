@@ -32,6 +32,30 @@ struct InputView: View {
             .navigationDestination(isPresented: $navigateToResult) {
                 ResultView(tailoredCV: model.tailoredCV)
             }
+            .overlay {
+                if model.isLoading {
+                    ZStack {
+                        Color.black.opacity(0.35)
+                            .ignoresSafeArea()
+                        VStack(spacing: 16) {
+                            ProgressView()
+                                .progressViewStyle(.circular)
+                                .scaleEffect(1.4)
+                                .tint(.white)
+                            Text("Tailoring your CV…")
+                                .font(.headline)
+                                .foregroundStyle(.white)
+                            Text("This may take a moment")
+                                .font(.subheadline)
+                                .foregroundStyle(.white.opacity(0.8))
+                        }
+                        .padding(32)
+                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20))
+                    }
+                    .transition(.opacity.animation(.easeInOut(duration: 0.2)))
+                }
+            }
+            .allowsHitTesting(!model.isLoading)
             .fileImporter(
                 isPresented: $showingFilePicker,
                 allowedContentTypes: [UTType.pdf]
