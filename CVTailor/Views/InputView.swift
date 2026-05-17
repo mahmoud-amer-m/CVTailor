@@ -7,6 +7,7 @@ struct InputView: View {
     @AppStorage("anthropicAPIKey") private var apiKey = ""
 
     @State private var showingFilePicker = false
+    @State private var showingClearConfirm = false
     @State private var cvMode: CVMode = .text
     @State private var navigateToResult = false
 
@@ -29,6 +30,26 @@ struct InputView: View {
                 actionSection
             }
             .navigationTitle("CV Tailor")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(role: .destructive) {
+                        showingClearConfirm = true
+                    } label: {
+                        Image(systemName: "trash")
+                    }
+                    .disabled(model.jobDescription.isEmpty && model.cvText.isEmpty)
+                }
+            }
+            .confirmationDialog("Clear all fields?", isPresented: $showingClearConfirm, titleVisibility: .visible) {
+                Button("Clear", role: .destructive) {
+                    model.jobDescription = ""
+                    model.cvText = ""
+                    cvMode = .text
+                }
+                Button("Cancel", role: .cancel) { }
+            } message: {
+                Text("This will remove the job description and CV. Your API key will not be affected.")
+            }
             .navigationDestination(isPresented: $navigateToResult) {
                 ResultView(tailoredCV: model.tailoredCV)
             }
