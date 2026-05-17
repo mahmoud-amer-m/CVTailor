@@ -92,7 +92,7 @@ struct InputView: View {
                         systemImage: model.cvText.isEmpty ? "doc.badge.plus" : "checkmark.circle.fill"
                     )
                 }
-                .foregroundStyle(model.cvText.isEmpty ? .accentColor : .green)
+                .foregroundStyle(model.cvText.isEmpty ? Color.accentColor : Color.green)
 
                 if !model.cvText.isEmpty {
                     Text("\(model.cvText.count) characters extracted")
@@ -133,11 +133,10 @@ struct InputView: View {
         }
     }
 
-    private func importPDF(_ result: Result<[URL], Error>) {
+    private func importPDF(_ result: Result<URL, Error>) {
         switch result {
-        case .success(let urls):
-            guard let url = urls.first,
-                  url.startAccessingSecurityScopedResource() else { return }
+        case .success(let url):
+            guard url.startAccessingSecurityScopedResource() else { return }
             defer { url.stopAccessingSecurityScopedResource() }
 
             guard let data = try? Data(contentsOf: url),
