@@ -4,14 +4,7 @@ struct ResultView: View {
     let tailoredCV: String
     let originalPDFData: Data?
 
-    private var exportPDF: ExportablePDF {
-        let styleGuide = PDFService.extractStyleGuide(from: originalPDFData)
-        return ExportablePDF(data: PDFService.generatePDF(from: tailoredCV, styleGuide: styleGuide))
-    }
-
-    private var exportTXT: ExportableTXT {
-        ExportableTXT(text: tailoredCV)
-    }
+    @State private var cachedPDFData: Data = Data()
 
     var body: some View {
         ScrollView {
@@ -26,7 +19,7 @@ struct ResultView: View {
         .toolbar {
             ToolbarItemGroup(placement: .topBarTrailing) {
                 ShareLink(
-                    item: exportPDF,
+                    item: ExportablePDF(data: cachedPDFData),
                     preview: SharePreview(
                         "Tailored_CV.pdf",
                         image: Image(systemName: "doc.richtext")
@@ -36,7 +29,7 @@ struct ResultView: View {
                 }
 
                 ShareLink(
-                    item: exportTXT,
+                    item: ExportableTXT(text: tailoredCV),
                     preview: SharePreview(
                         "Tailored_CV.txt",
                         image: Image(systemName: "doc.text")
@@ -46,11 +39,18 @@ struct ResultView: View {
                 }
             }
         }
+        .task {
+            let styleGuide = PDFService.extractStyleGuide(from: originalPDFData)
+            cachedPDFData = PDFService.generatePDF(from: tailoredCV, styleGuide: styleGuide)
+        }
     }
 }
 
 #Preview {
     NavigationStack {
-        ResultView(tailoredCV: "John Doe\nSoftware Engineer\n\nExperience:\n• Built scalable iOS apps\n• Led cross-functional teams", originalPDFData: nil)
+        ResultView(
+            tailoredCV: "John Doe\nSoftware Engineer\n\nExperience:\n• Built scalable iOS apps\n• Led cross-functional teams",
+            originalPDFData: nil
+        )
     }
 }

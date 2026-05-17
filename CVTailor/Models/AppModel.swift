@@ -3,6 +3,9 @@ import Observation
 
 @Observable
 class AppModel {
+    var apiKey: String = UserDefaults.standard.string(forKey: "anthropicAPIKey") ?? "" {
+        didSet { UserDefaults.standard.set(apiKey, forKey: "anthropicAPIKey") }
+    }
     var jobDescription: String = ""
     var cvText: String = ""
     var originalPDFData: Data? = nil
@@ -11,7 +14,7 @@ class AppModel {
     var errorTitle: String? = nil
     var errorMessage: String? = nil
 
-    func tailorCV(apiKey: String) async {
+    func tailorCV() async {
         guard !jobDescription.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
               !cvText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
             errorTitle = "Missing Input"

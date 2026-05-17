@@ -1,8 +1,6 @@
 import PDFKit
-import SwiftUI
 import CoreText
 import UIKit
-import UniformTypeIdentifiers
 
 // Captures the three typographic roles found in the original PDF.
 struct CVStyleGuide {
@@ -348,30 +346,3 @@ struct PDFService {
     }
 }
 
-// MARK: - Transferable export types
-
-struct ExportablePDF: Transferable {
-    let data: Data
-
-    static var transferRepresentation: some TransferRepresentation {
-        FileRepresentation(exportedContentType: .pdf) { item in
-            let url = FileManager.default.temporaryDirectory
-                .appendingPathComponent("Tailored_CV.pdf")
-            try item.data.write(to: url)
-            return SentTransferredFile(url)
-        }
-    }
-}
-
-struct ExportableTXT: Transferable {
-    let text: String
-
-    static var transferRepresentation: some TransferRepresentation {
-        FileRepresentation(exportedContentType: .plainText) { item in
-            let url = FileManager.default.temporaryDirectory
-                .appendingPathComponent("Tailored_CV.txt")
-            try item.text.write(to: url, atomically: true, encoding: .utf8)
-            return SentTransferredFile(url)
-        }
-    }
-}
