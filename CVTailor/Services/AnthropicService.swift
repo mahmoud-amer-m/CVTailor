@@ -8,16 +8,58 @@ private struct AnthropicResponse: Decodable {
     let content: [Content]
 }
 
+private struct AnthropicErrorBody: Decodable {
+    struct Detail: Decodable {
+        let message: String
+    }
+    let error: Detail
+}
+
 enum AnthropicError: LocalizedError {
-    case apiError(Int, String)
+    case invalidAPIKey
+    case permissionDenied
+    case rateLimited
+    case serverOverloaded
+    case serverError(Int)
+    case invalidRequest(String)
+    case networkError(String)
     case emptyResponse
+    case unexpectedResponse
+
+    var errorTitle: String {
+        switch self {
+        case .invalidAPIKey:        return "Invalid API Key"
+        case .permissionDenied:     return "Permission Denied"
+        case .rateLimited:          return "Rate Limit Reached"
+        case .serverOverloaded:     return "Server Overloaded"
+        case .serverError:          return "Server Error"
+        case .invalidRequest:       return "Invalid Request"
+        case .networkError:         return "Network Error"
+        case .emptyResponse,
+             .unexpectedResponse:   return "Unexpected Response"
+        }
+    }
 
     var errorDescription: String? {
         switch self {
-        case .apiError(let code, let body):
-            return "API error \(code): \(body)"
+        case .invalidAPIKey:
+            return "The API key is invalid. Double-check the key in the form."
+        case .permissionDenied:
+            return "Your API key does not have permission to use this model."
+        case .rateLimited:
+            return "Rate limit reached. Wait a moment, then try again."
+        case .serverOverloaded:
+            return "Anthropic's servers are currently overloaded. Try again shortly."
+        case .serverError(let code):
+            return "Server error (\(code)). Try again in a few moments."
+        case .invalidRequest(let message):
+            return message
+        case .networkError(let message):
+            return message
         case .emptyResponse:
-            return "The API returned an empty response."
+            return "The API returned an empty response. Please try again."
+        case .unexpectedResponse:
+            return "Received an unexpected response. Please try again."
         }
     }
 }
@@ -59,15 +101,28 @@ struct AnthropicService {
 
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
 
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let data: Data
+        let response: URLResponse
+        do {
+            (data, response) = try await URLSession.shared.data(for: request)
+        } catch let urlError as URLError {
+            throw AnthropicError.networkError(urlError.localizedDescription)
+        }
 
         guard let http = response as? HTTPURLResponse else {
-            throw AnthropicError.apiError(0, "Invalid response")
+            throw AnthropicError.unexpectedResponse
         }
 
         guard http.statusCode == 200 else {
-            let message = String(data: data, encoding: .utf8) ?? "Unknown error"
-            throw AnthropicError.apiError(http.statusCode, message)
+            let detail = try? JSONDecoder().decode(AnthropicErrorBody.self, from: data)
+            switch http.statusCode {
+            case 401: throw AnthropicError.invalidAPIKey
+            case 403: throw AnthropicError.permissionDenied
+            case 429: throw AnthropicError.rateLimited
+            case 529: throw AnthropicError.serverOverloaded
+            case 400: throw AnthropicError.invalidRequest(detail?.error.message ?? "Invalid request.")
+            default:  throw AnthropicError.serverError(http.statusCode)
+            }
         }
 
         let decoded = try JSONDecoder().decode(AnthropicResponse.self, from: data)

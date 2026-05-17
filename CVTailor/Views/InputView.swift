@@ -63,13 +63,14 @@ struct InputView: View {
                 importPDF(result)
             }
             .alert(
-                "Error",
+                model.errorTitle ?? "Error",
                 isPresented: Binding(
                     get: { model.errorMessage != nil },
                     set: { if !$0 { model.errorMessage = nil } }
                 )
             ) {
-                Button("OK") { model.errorMessage = nil }
+                Button("Try Again") { runTailor() }
+                Button("Cancel", role: .cancel) { }
             } message: {
                 Text(model.errorMessage ?? "")
             }
@@ -129,15 +130,19 @@ struct InputView: View {
         }
     }
 
+    private func runTailor() {
+        Task {
+            await model.tailorCV(apiKey: apiKey)
+            if model.errorMessage == nil && !model.tailoredCV.isEmpty {
+                navigateToResult = true
+            }
+        }
+    }
+
     private var actionSection: some View {
         Section {
             Button {
-                Task {
-                    await model.tailorCV(apiKey: apiKey)
-                    if model.errorMessage == nil && !model.tailoredCV.isEmpty {
-                        navigateToResult = true
-                    }
-                }
+                runTailor()
             } label: {
                 HStack {
                     Spacer()
