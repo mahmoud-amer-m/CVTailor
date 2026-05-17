@@ -32,13 +32,18 @@ A native iOS app built to demonstrate AI-driven mobile development — part of a
 ```
 CVTailor/
 ├── Models/
-│   └── AppModel.swift          # @Observable state — drives the entire UI
+│   └── AppModel.swift              # @Observable state; API key persisted via UserDefaults didSet
 ├── Services/
-│   ├── AnthropicService.swift  # URLSession call to POST /v1/messages
-│   └── PDFService.swift        # PDFKit parsing, CoreText PDF generation, Transferable export types
+│   ├── AnthropicService.swift      # URLSession call to POST /v1/messages; typed error cases
+│   ├── PDFService.swift            # PDFKit text extraction, CVStyleGuide sampling, CoreText PDF generation
+│   └── ExportTypes.swift           # ExportablePDF and ExportableTXT Transferable types
 └── Views/
-    ├── InputView.swift         # API key, job description, CV input, loading overlay
-    └── ResultView.swift        # Scrollable result, PDF + TXT export via ShareLink
+    ├── InputView.swift             # Navigation host; composes sections, overlay, alert, toolbar
+    ├── ResultView.swift            # Scrollable result; PDF cached in @State via .task; ShareLink export
+    └── Sections/
+        ├── APIKeySection.swift     # SecureField bound to model.apiKey
+        ├── JobDescriptionSection.swift  # TextEditor for the job posting
+        └── CVInputSection.swift    # Mode picker, text editor / PDF import, file picker logic
 ```
 
 ## Usage
@@ -52,7 +57,7 @@ CVTailor/
 
 ## Notes
 
-- The API key is stored in `UserDefaults`. For a production release, move it to the Keychain.
+- The API key lives on `AppModel` and is persisted to `UserDefaults` via a `didSet` observer. For a production release, move it to the Keychain.
 - Image-based or scanned PDFs cannot have text extracted and will show an error.
 - The model used is `claude-opus-4-7`. Swap to a smaller model in `AnthropicService.swift` to reduce cost.
 - PDF format matching works on text-based PDFs. The style guide is sampled from the first page: most-frequent font size = body, largest = name, the size in between = section headers.
