@@ -139,12 +139,60 @@ struct PDFService {
                     path, nil
                 )
                 CTFrameDraw(frame, ctx)
-                ctx.restoreGState()
+
+                // setURL(_:for:) works in current user space (CTM-aware), so call it
+                // here while still inside the flipped context so the rects from
+                // CTFrameGetLineOrigins align correctly.
+                for (url, rect) in collectLinkRects(from: frame) {
+                    ctx.setURL(url as CFURL, for: rect)
+                }
 
                 let visible = CTFrameGetVisibleStringRange(frame)
                 currentLocation = visible.location + visible.length
             } while currentLocation < attrString.length
         }
+    }
+
+    // Walks every CTRun in the frame looking for an "NSLink" attribute.
+    // Returns rects in the flipped coordinate system (origin = top-left).
+    private static func collectLinkRects(from frame: CTFrame) -> [(url: URL, rect: CGRect)] {
+        var results: [(URL, CGRect)] = []
+
+        let lines = CTFrameGetLines(frame) as! [CTLine]
+        var origins = [CGPoint](repeating: .zero, count: lines.count)
+        CTFrameGetLineOrigins(frame, CFRange(location: 0, length: 0), &origins)
+
+        for (i, line) in lines.enumerated() {
+            for run in (CTLineGetGlyphRuns(line) as! [CTRun]) {
+                let attrs = CTRunGetAttributes(run) as NSDictionary
+                // NSAttributedString.Key.link.rawValue == "NSLink"
+                let linkValue = attrs["NSLink"]
+                guard let url: URL = {
+                    if let u = linkValue as? URL    { return u }
+                    if let s = linkValue as? String { return URL(string: s) }
+                    return nil
+                }() else { continue }
+
+                var ascent: CGFloat = 0, descent: CGFloat = 0
+                let width = CTRunGetTypographicBounds(
+                    run, CFRange(location: 0, length: 0), &ascent, &descent, nil
+                )
+                let xOffset = CTLineGetOffsetForStringIndex(
+                    line, CTRunGetStringRange(run).location, nil
+                )
+
+                // In the flipped system, y increases downward.
+                // The glyph top edge is (baseline - ascent), bottom edge is (baseline + descent).
+                let rect = CGRect(
+                    x: origins[i].x + xOffset,
+                    y: origins[i].y - ascent,
+                    width: CGFloat(width),
+                    height: ascent + descent
+                )
+                results.append((url, rect))
+            }
+        }
+        return results
     }
 
     // MARK: - Attributed string builder
@@ -194,6 +242,20 @@ struct PDFService {
                     .paragraphStyle: paragraph
                 ]
             ))
+        }
+
+        // Detect URLs and apply .link + underline so they become clickable in the PDF.
+        if let detector = try? NSDataDetector(
+            types: NSTextCheckingResult.CheckingType.link.rawValue
+        ) {
+            let fullRange = NSRange(location: 0, length: result.length)
+            for match in detector.matches(in: result.string, range: fullRange) {
+                guard let url = match.url else { continue }
+                result.addAttributes([
+                    .link: url,
+                    .underlineStyle: NSUnderlineStyle.single.rawValue
+                ], range: match.range)
+            }
         }
 
         return result
