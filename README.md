@@ -1,6 +1,6 @@
 # CVTailor
 
-An iOS app that tailors your CV to a specific job description using the Anthropic API. Paste or import your CV (PDF or text), provide the job description, and receive an optimised version you can export as a PDF or plain-text file.
+A native iOS app built to demonstrate AI-driven mobile development — part of an ongoing effort to showcase practical integrations between Apple frameworks and large language models. Paste or import your CV (PDF or text), provide a job description, and receive an AI-tailored version exported as a PDF or plain-text file, all powered by the Anthropic API.
 
 ## Features
 
