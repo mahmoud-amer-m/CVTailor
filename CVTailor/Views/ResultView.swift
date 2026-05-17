@@ -5,7 +5,8 @@ struct ResultView: View {
     let originalPDFData: Data?
 
     private var exportPDF: ExportablePDF {
-        ExportablePDF(data: PDFService.generatePDF(from: tailoredCV, matchingPDF: originalPDFData))
+        let styleGuide = PDFService.extractStyleGuide(from: originalPDFData)
+        return ExportablePDF(data: PDFService.generatePDF(from: tailoredCV, styleGuide: styleGuide))
     }
 
     private var exportTXT: ExportableTXT {
