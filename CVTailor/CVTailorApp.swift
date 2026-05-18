@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct CVTailorApp: App {
@@ -13,5 +14,6 @@ struct CVTailorApp: App {
         WindowGroup {
             ContentView()
         }
+        .modelContainer(for: TailoredCVRecord.self)
     }
 }

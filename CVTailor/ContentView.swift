@@ -11,7 +11,21 @@ struct ContentView: View {
     @State private var model = AppModel()
 
     var body: some View {
-        InputView(model: model)
+        TabView {
+            NavigationStack {
+                InputView(model: model)
+            }
+            .tabItem {
+                Label("Tailor", systemImage: "wand.and.stars")
+            }
+
+            NavigationStack {
+                HistoryView()
+            }
+            .tabItem {
+                Label("History", systemImage: "clock")
+            }
+        }
     }
 }
 

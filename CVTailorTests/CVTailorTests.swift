@@ -1,4 +1,5 @@
 import XCTest
+import SwiftData
 @testable import CVTailor
 
 final class PDFServiceTests: XCTestCase {
@@ -93,38 +94,44 @@ final class AnthropicErrorTests: XCTestCase {
 
 final class AppModelTests: XCTestCase {
 
+    private func makeModelContext() throws -> ModelContext {
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        let container = try ModelContainer(for: TailoredCVRecord.self, configurations: config)
+        return container.mainContext
+    }
+
     @MainActor
-    func testTailorCVWithEmptyJobDescriptionSetsError() async {
+    func testTailorCVWithEmptyJobDescriptionSetsError() async throws {
         let model = AppModel()
         model.jobDescription = ""
         model.cvText = "Some CV content"
-        await model.tailorCV()
+        await model.tailorCV(modelContext: try makeModelContext())
         XCTAssertEqual(model.errorTitle, "Missing Input")
         XCTAssertNotNil(model.errorMessage)
     }
 
     @MainActor
-    func testTailorCVWithEmptyCVSetsError() async {
+    func testTailorCVWithEmptyCVSetsError() async throws {
         let model = AppModel()
         model.jobDescription = "Some job description"
         model.cvText = ""
-        await model.tailorCV()
+        await model.tailorCV(modelContext: try makeModelContext())
         XCTAssertEqual(model.errorTitle, "Missing Input")
     }
 
     @MainActor
-    func testTailorCVWithWhitespaceOnlyInputsSetsError() async {
+    func testTailorCVWithWhitespaceOnlyInputsSetsError() async throws {
         let model = AppModel()
         model.jobDescription = "   \t\n"
         model.cvText = "   \t\n"
-        await model.tailorCV()
+        await model.tailorCV(modelContext: try makeModelContext())
         XCTAssertEqual(model.errorTitle, "Missing Input")
     }
 
     @MainActor
     func testInitialStateHasNoErrors() {
         let model = AppModel()
-        XCTAssertTrue(model.tailoredCV.isEmpty)
+        XCTAssertNil(model.recentRecord)
         XCTAssertFalse(model.isLoading)
         XCTAssertNil(model.errorTitle)
         XCTAssertNil(model.errorMessage)

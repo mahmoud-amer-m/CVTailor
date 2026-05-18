@@ -1,14 +1,14 @@
 import SwiftUI
+import SwiftData
 
 struct ResultView: View {
-    let tailoredCV: String
-    let originalPDFData: Data?
+    let record: TailoredCVRecord
 
     @State private var cachedPDFData: Data = Data()
 
     var body: some View {
         ScrollView {
-            Text(tailoredCV)
+            Text(record.tailoredCV)
                 .padding()
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .textSelection(.enabled)
@@ -29,7 +29,7 @@ struct ResultView: View {
                 }
 
                 ShareLink(
-                    item: ExportableTXT(text: tailoredCV),
+                    item: ExportableTXT(text: record.tailoredCV),
                     preview: SharePreview(
                         "Tailored_CV.txt",
                         image: Image(systemName: "doc.text")
@@ -40,17 +40,23 @@ struct ResultView: View {
             }
         }
         .task {
-            let styleGuide = PDFService.extractStyleGuide(from: originalPDFData)
-            cachedPDFData = PDFService.generatePDF(from: tailoredCV, styleGuide: styleGuide)
+            let styleGuide = PDFService.extractStyleGuide(from: record.originalPDFData)
+            cachedPDFData = PDFService.generatePDF(from: record.tailoredCV, styleGuide: styleGuide)
         }
     }
 }
 
 #Preview {
+    let config = ModelConfiguration(isStoredInMemoryOnly: true)
+    let container = try! ModelContainer(for: TailoredCVRecord.self, configurations: config)
+    let record = TailoredCVRecord(
+        jobDescription: "Software Engineer at Stripe",
+        cvText: "John Doe...",
+        tailoredCV: "John Doe\nSoftware Engineer\n\nExperience:\n• Built scalable iOS apps\n• Led cross-functional teams",
+        originalPDFData: nil
+    )
     NavigationStack {
-        ResultView(
-            tailoredCV: "John Doe\nSoftware Engineer\n\nExperience:\n• Built scalable iOS apps\n• Led cross-functional teams",
-            originalPDFData: nil
-        )
+        ResultView(record: record)
     }
+    .modelContainer(container)
 }

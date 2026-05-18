@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import SwiftData
 
 @Observable
 class AppModel {
@@ -9,12 +10,12 @@ class AppModel {
     var jobDescription: String = ""
     var cvText: String = ""
     var originalPDFData: Data? = nil
-    var tailoredCV: String = ""
+    var recentRecord: TailoredCVRecord? = nil
     var isLoading: Bool = false
     var errorTitle: String? = nil
     var errorMessage: String? = nil
 
-    func tailorCV() async {
+    func tailorCV(modelContext: ModelContext) async {
         guard !jobDescription.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
               !cvText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
             errorTitle = "Missing Input"
@@ -25,14 +26,22 @@ class AppModel {
         isLoading = true
         errorTitle = nil
         errorMessage = nil
-        tailoredCV = ""
+        recentRecord = nil
 
         do {
-            tailoredCV = try await AnthropicService.tailorCV(
+            let result = try await AnthropicService.tailorCV(
                 jobDescription: jobDescription,
                 cv: cvText,
                 apiKey: apiKey
             )
+            let record = TailoredCVRecord(
+                jobDescription: jobDescription,
+                cvText: cvText,
+                tailoredCV: result,
+                originalPDFData: originalPDFData
+            )
+            modelContext.insert(record)
+            recentRecord = record
         } catch let err as AnthropicError {
             errorTitle = err.errorTitle
             errorMessage = err.localizedDescription
